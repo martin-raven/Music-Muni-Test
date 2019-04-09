@@ -1,4 +1,3 @@
-from pprint import pprint
 import os
 import pickle
 from googleapiclient import discovery
@@ -15,6 +14,8 @@ if os.path.exists('token.pickle'):
 else:
 	print("Please run the InitialRun.py before this file")
 	quit()
+
+# Main Service initialized 
 service = discovery.build('sheets', 'v4', credentials=credentials)
 
 try:
@@ -23,14 +24,11 @@ try:
 	# Getting the values into the list
 	if "values" in result and result["values"]!=[]:
 		CourseData=result["values"][1:]
-
+	# Incase the values is empty or error occurs while requesting
 	else:
 		print("No Courses found")
 		quit()
-	# 
 	print(CourseData)
 except Exception as e:
 	print(e)
 	quit()
-# numRows = result.get('values') if result.get('values')is not None else 0
-# print('{0} rows retrieved.'.format(numRows))
