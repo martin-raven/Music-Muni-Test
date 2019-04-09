@@ -28,7 +28,22 @@ try:
 	else:
 		print("No Courses found")
 		quit()
-	print(CourseData)
+	# print(CourseData)
+	# Parsing the data into a JSON
+	Courses=[]
+	for Item in CourseData[1:]:
+		# print(Item)
+		Course={}
+		try:
+			for key,entry in zip(CourseData[0],Item):
+				if entry!="":
+					Course[key]=entry
+					print(entry,key)
+		except Exception as e:
+			print(e)
+		if Course!={}:
+			Courses.append(Course)
+	print(Courses)
 except Exception as e:
 	print(e)
 	quit()
