@@ -5,7 +5,7 @@ import time
 import json
 
 					# Static Variables
-spreadsheet_id="1A3Ph6mfzKO-Aollw8zCx86-PwCoI-wMJVf5hTtEb3bs"
+spreadsheet_id="1jHuLtMFhF-4P4BJXDdRZUx6gQxkRA17Us4vtK6f8GP0"
 range_one="Course"
 range_two="Module"
 range_three="Lesson"
@@ -63,16 +63,16 @@ def ParseMedias(range,Courses):
 			Medias[Media["UID"]]=Media
 	# print(Medias)
 	UnusedMedias=list(Medias.keys())
-	for Course in Courses:
-		for Module in Course["modules"].keys():
+	for Course in Courses.keys():
+		for Module in Courses[Course]["modules"].keys():
 			# print(Module)
-			for Lesson in Course["modules"][Module]["lessons"].keys():
-				MediaList=Course["modules"][Module]["lessons"][Lesson]["medias"].split(",")
-				Course["modules"][Module]["lessons"][Lesson]["medias"]={}
+			for Lesson in Courses[Course]["modules"][Module]["lessons"].keys():
+				MediaList=Courses[Course]["modules"][Module]["lessons"][Lesson]["medias"].split(",")
+				Courses[Course]["modules"][Module]["lessons"][Lesson]["medias"]={}
 				for LessonMedia in MediaList:
 					# print(LessonMedia)
 					try:
-						Course["modules"][Module]["lessons"][Lesson]["medias"][LessonMedia]=Medias[LessonMedia]
+						Courses[Course]["modules"][Module]["lessons"][Lesson]["medias"][LessonMedia]=Medias[LessonMedia]
 						UnusedMedias.remove(LessonMedia)
 					except Exception as e:
 						print(e," media mensioned in ",Lesson," is missing")
@@ -104,15 +104,15 @@ def ParseLessons(range,Courses):
 			Lessons[Lesson["UID"].rstrip('\n')]=Lesson
 	# print(Lessons)
 	UnusedLessons=list(Lessons.keys())
-	for Course in Courses:
-		for Module in Course["modules"].keys():
+	for Course in Courses.keys():
+		for Module in Courses[Course]["modules"].keys():
 			# print(Module)
-			LessonList=Course["modules"][Module]["lessons"].split(",")
-			Course["modules"][Module]["lessons"]={}
+			LessonList=Courses[Course]["modules"][Module]["lessons"].split(",")
+			Courses[Course]["modules"][Module]["lessons"]={}
 			for ModuleLesson in LessonList:
 				# print(ModuleLesson)
 				try:
-					Course["modules"][Module]["lessons"][ModuleLesson]=Lessons[ModuleLesson]
+					Courses[Course]["modules"][Module]["lessons"][ModuleLesson]=Lessons[ModuleLesson]
 					UnusedLessons.remove(ModuleLesson)
 				except Exception as e:
 					print(e,ModuleLesson," is missing !!")
@@ -146,16 +146,16 @@ def ParseModules(range,Courses):
 			Modules[Module["UID"].rstrip('\n')]=Module
 	# print(Modules)
 	UnusedModules=list(Modules.keys())
-	for Course in Courses:
-		ModuleList=Course["modules"].split(',')
-		Course["modules"]={}
+	for Course in Courses.keys():
+		ModuleList=Courses[Course]["modules"].split(',')
+		Courses[Course]["modules"]={}
 		for CourseModule in ModuleList:
-			# print(CourseModule)
+			print(CourseModule)
 			try:
-				Course["modules"][CourseModule]=Modules[CourseModule]
+				Courses[Course]["modules"][CourseModule]=Modules[CourseModule]
 				UnusedModules.remove(CourseModule)
 			except Exception as e:
-				print(e,CourseModule," module is missing !!")
+				print(e," module is missing !!")
 				# Course["modules"][CourseModule].remove(CourseModule)
 	if UnusedModules!=[]:
 		print("The following modules have no parent: ",UnusedModules)
@@ -168,7 +168,7 @@ def ParseModules(range,Courses):
 def ParseCourse(range):
 	print("\nParsing Courses into JSON....")
 	CourseData=retrive(range)
-	Courses=[]
+	Courses={}
 	for Item in CourseData[1:]:
 		# print(Item)
 		Course={}
@@ -180,8 +180,9 @@ def ParseCourse(range):
 		except Exception as e:
 			print("Unable to add ",Item," because ",e)
 		if Course!={}:
-			Courses.append(Course)
+			Courses[Item[0]]=Course
 	print("Parsing Courses into JSON completed.\n")
+	print(Courses)
 	return Courses 
 					#Main Function 
 def main():
@@ -198,7 +199,7 @@ def main():
 		# print(Courses)
 						# Parsing medias data into Lessons
 		Courses=ParseMedias(range_four,Courses)
-		# print(Courses)
+		print(Courses)
 		with open('Data.json', 'w') as outputfile:
 			json.dump(Courses, outputfile)
 		print("\nCompleted the parsing of the data, check the Data.json file.\n")
