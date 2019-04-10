@@ -5,7 +5,7 @@ import time
 import json
 
 					# Static Variables
-spreadsheet_id="1jHuLtMFhF-4P4BJXDdRZUx6gQxkRA17Us4vtK6f8GP0"
+spreadsheet_id="1A3Ph6mfzKO-Aollw8zCx86-PwCoI-wMJVf5hTtEb3bs"
 range_one="Course"
 range_two="Module"
 range_three="Lesson"
@@ -150,7 +150,7 @@ def ParseModules(range,Courses):
 		ModuleList=Courses[Course]["modules"].split(',')
 		Courses[Course]["modules"]={}
 		for CourseModule in ModuleList:
-			print(CourseModule)
+			# print(CourseModule)
 			try:
 				Courses[Course]["modules"][CourseModule]=Modules[CourseModule]
 				UnusedModules.remove(CourseModule)
@@ -182,7 +182,7 @@ def ParseCourse(range):
 		if Course!={}:
 			Courses[Item[0]]=Course
 	print("Parsing Courses into JSON completed.\n")
-	print(Courses)
+	# print(Courses)
 	return Courses 
 					#Main Function 
 def main():
